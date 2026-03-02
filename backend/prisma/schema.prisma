@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String      @id @default(uuid()) @db.Uuid
+  email     String      @unique
+  password  String      @map("password_hash")
+  fullName  String      @map("full_name")
+  role      UserRole    @default(USER)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  profile   UserProfile?
+  workouts  Workout[]
+  plans     AIPlan[]
+
+  @@map("users")
+}
+
+model UserProfile {
+  userId        String   @id @map("user_id") @db.Uuid
+  age           Int?
+  sex           SexType?
+  heightCm      Decimal? @map("height_cm")
+  weightKg      Decimal? @map("weight_kg")
+  goal          String
+  activityLevel String   @map("activity_level")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Workout {
+  id              String            @id @default(uuid()) @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  name            String
+  caloriesBurned  Int?              @map("calories_burned")
+  durationMinutes Int?              @map("duration_minutes")
+  intensity       Intensity?
+  scheduledFor    DateTime?         @map("scheduled_for")
+  exercises       WorkoutExercise[]
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("workouts")
+}
+
+model WorkoutExercise {
+  id           String   @id @default(uuid()) @db.Uuid
+  workoutId    String   @map("workout_id") @db.Uuid
+  exerciseName String   @map("exercise_name")
+  sets         Int?
+  reps         Int?
+  weightKg     Decimal? @map("weight_kg")
+  workout      Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  @@map("workout_exercises")
+}
+
+model AIPlan {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  title       String
+  planPayload Json     @map("plan_payload")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_plans")
+}
+
+enum UserRole {
+  USER @map("user")
+  ADMIN @map("admin")
+  AI_AGENT @map("ai_agent")
+}
+
+enum SexType {
+  male
+  female
+  other
+}
+
+enum Intensity {
+  low
+  medium
+  high
+}
