@@ -3,6 +3,7 @@ import Link from 'next/link';
 const items = [
   ['Home', '/'],
   ['Onboarding', '/auth/onboarding'],
+  ['Setup', '/setup'],
   ['Dashboard', '/dashboard'],
   ['Workouts', '/workouts'],
   ['AI Coach', '/chat']

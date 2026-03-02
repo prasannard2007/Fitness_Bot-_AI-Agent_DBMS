@@ -57,7 +57,11 @@
 - `GET /api/v1/workouts`
 - `POST /api/v1/workouts`
 - `GET /api/v1/nutrition-logs`
-- `POST /api/v1/agent/run-cycle` (admin/ai_agent)
+- `POST /api/v1/agent/run-cycle` (user/admin/ai_agent)
+- `GET /api/v1/settings/integrations`
+- `PUT /api/v1/settings/integrations`
+- `GET /api/v1/requirements`
+- `POST /api/v1/requirements`
 
 ## 4) Agentic AI Workflow
 
