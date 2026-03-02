@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fitness_bot
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:
+      context: ./backend
+    command: npm run dev
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/fitness_bot
+      JWT_SECRET: super-secret
+      PORT: 4000
+    ports:
+      - '4000:4000'
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    command: npm run dev
+    environment:
+      NEXT_PUBLIC_API_BASE: http://localhost:4000/api/v1
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
